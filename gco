@@ -1,5 +1,16 @@
 #!/bin/bash
 
+function clean() {
+    git branch | grep -v master | while read B; do
+        branch=remotes/origin/`echo ${B} | sed -e 's/remotes\/origin\///g'`
+        if [ `git branch -a | grep ${branch} > /dev/null 2>&1` ]; then
+            git branch -D ${B}
+        else
+            echo "[Notice] It is a local branch only [${B}]"
+        fi
+    done
+}
+
 function checkout() {
     branch=`echo $1 | sed -e 's/remotes\/origin\///g'`
     [ "${branch}" = "" ] \
@@ -14,5 +25,11 @@ function checkout() {
     git checkout ${ARG}
 }
 
-BUFFER=$(git branch -a | grep -v '*' | peco)
-checkout ${BUFFER}
+if [ "$1" = "clean" ]; then
+    clean
+    exit 0
+else
+    BUFFER=$(git branch -a | grep -v '*' | peco)
+    checkout ${BUFFER}
+    exit 0
+fi
