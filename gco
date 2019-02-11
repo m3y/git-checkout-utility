@@ -1,9 +1,9 @@
 #!/bin/bash
 
-function clean() {
+function cln() {
     git branch | grep -v master | while read B; do
         branch=remotes/origin/`echo ${B} | sed -e 's/remotes\/origin\///g'`
-        if [ `git branch -a | grep ${branch} > /dev/null 2>&1` ]; then
+        if [ `git branch -a | grep ${branch}` ]; then
             git branch -D ${B}
         else
             echo "[Notice] It is a local branch only [${B}]"
@@ -26,8 +26,10 @@ function checkout() {
 }
 
 if [ "$1" = "clean" ]; then
-    clean
+    cln
     exit 0
+elif [ "$1" = "pull" ]; then
+    git pull --prune
 else
     BUFFER=$(git branch -a | grep -v '*' | peco)
     checkout ${BUFFER}
