@@ -25,11 +25,22 @@ function checkout() {
     git checkout ${ARG}
 }
 
+function create() {
+    branch=remotes/origin/`echo ${1} | sed -e 's/remotes\/origin\///g'`
+    if [ "`git branch -a | grep ${branch}`" ]; then
+        checkout $1
+    else
+        git checkout -b $1
+    fi
+}
+
 if [ "$1" = "clean" ]; then
     cln
     exit 0
 elif [ "$1" = "pull" ]; then
     git pull --prune
+elif [ "$1" != "" ]; then
+    create $1
 else
     BUFFER=$(git branch -a | grep -v '*' | peco)
     checkout ${BUFFER}
