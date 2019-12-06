@@ -1,9 +1,12 @@
 #!/bin/bash
 
 function cln() {
+    doforce=$1
     git branch | grep -v master | while read B; do
         branch=remotes/origin/`echo ${B} | sed -e 's/remotes\/origin\///g'`
-        if [ `git branch -a | grep ${branch}` ]; then
+        if [ "x${doforce}" = "x-f" ]; then
+            git branch -D ${B}
+        elif [ `git branch -a | grep ${branch}` ]; then
             git branch -D ${B}
         else
             echo "[Notice] It is a local branch only [${B}]"
@@ -36,6 +39,9 @@ function create() {
 
 if [ "$1" = "clean" ]; then
     cln
+    exit 0
+elif [ "$1" = "forceclean" ]; then
+    cln -f
     exit 0
 elif [ "$1" = "pull" ]; then
     git pull --prune
