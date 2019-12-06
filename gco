@@ -39,8 +39,13 @@ if [ "$1" = "clean" ]; then
     exit 0
 elif [ "$1" = "pull" ]; then
     git pull --prune
+elif [ "$1" = "-b" ]; then
+    if [ "x$2" = "x" ]; then
+        exit 1
+    fi
+    create $2
 elif [ "$1" != "" ]; then
-    create $1
+    checkout $1
 else
     BUFFER=$(git branch -a | grep -v '*' | peco)
     checkout ${BUFFER}
