@@ -2,7 +2,7 @@
 
 function cln() {
     doforce=$1
-    git branch | grep -v master | while read B; do
+    git branch | grep -v master | grep -v main | while read B; do
         branch=remotes/origin/`echo ${B} | sed -e 's/remotes\/origin\///g'`
         if [ "x${doforce}" = "x-f" ]; then
             git branch -D ${B}
